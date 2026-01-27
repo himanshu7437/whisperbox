@@ -103,7 +103,7 @@ export async function GET(request: Request) {
     return Response.json(
       {
         success: false,
-        message: "Error is getting message acceptance status",
+        message: "Error in getting message acceptance status",
       },
       { status: 500 },
     );
