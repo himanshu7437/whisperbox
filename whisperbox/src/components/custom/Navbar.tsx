@@ -1,36 +1,56 @@
 'use client'
 
-import { signOut, useSession } from "next-auth/react"
-import Link from "next/link";
-import { User } from "next-auth";
-import { Button } from "../ui/button";
-
+import { signOut, useSession } from 'next-auth/react'
+import Link from 'next/link'
+import { User } from 'next-auth'
+import { Button } from '../ui/button'
+import { LogOut, MessageSquareText } from 'lucide-react'
 
 const Navbar = () => {
+  const { data: session } = useSession()
+  const user: User = session?.user as User
 
-    const { data: session } = useSession();
+  return (
+    <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+        
+        {/* LOGO */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-lg font-bold tracking-tight text-white"
+        >
+          <MessageSquareText className="h-5 w-5 text-pink-500" />
+          Whisper<span className="text-pink-500">Box</span>
+        </Link>
 
-    const user: User = session?.user as User;
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-3">
+          {session ? (
+            <>
+              <span className="hidden sm:block text-sm text-zinc-400">
+                @{user?.username || user?.email}
+              </span>
 
-    return (
-        <nav className="p-4 md:p-6 shadow-md">
-            <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-                <a className="text-xl font-bold mb-4 md:mb-0" href="">Mystery  Message</a>
-                {
-                    session ? (
-                        <>
-                        <span className="mr-4">Welcome, {user?.username || user?.email}</span>
-                        <Button className="w-full md:w-auto" onClick={() => signOut()}>Logout</Button>
-                        </>
-                    ): (
-                        <Link href={'/sign-in'}>
-                            <Button className="w-full md:w-auto">Login</Button>
-                        </Link>
-                    )
-                }
-            </div>
-        </nav>
-    )
+              <Button
+                onClick={() => signOut()}
+                variant="ghost"
+                className="flex items-center gap-2 rounded-full border border-white/10 text-zinc-300 hover:bg-red-500/10 hover:text-red-400"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
+            </>
+          ) : (
+            <Link href="/sign-in">
+              <Button className="rounded-full bg-pink-500 px-5 hover:bg-pink-600">
+                Login
+              </Button>
+            </Link>
+          )}
+        </div>
+      </div>
+    </nav>
+  )
 }
 
 export default Navbar
